@@ -2,6 +2,7 @@ const path = require('path');
 const { HotModuleReplacementPlugin } = require('webpack');
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
+const FriendlyErrorsWebpackPlugin = require('friendly-errors-webpack-plugin');
 
 module.exports = {
   entry: './src/index.js',
@@ -22,6 +23,12 @@ module.exports = {
     new HtmlWebpackPlugin({
       template: './src/index.html'
     }),
+    new FriendlyErrorsWebpackPlugin({
+      compilationSuccessInfo: {
+        messages: ['Your application is running here: http://localhost:8080'],
+      },
+      clearConsole: true,
+    }),
     new HotModuleReplacementPlugin()
   ],
   output: {
@@ -31,6 +38,7 @@ module.exports = {
   },
   devServer: {
     contentBase: './dist',
-    hot: true
+    hot: true,
+    stats: 'errors-only'
   }
 };
