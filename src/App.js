@@ -38,8 +38,6 @@ const App = () => {
 
   const animate = () => {
     requestAnimationFrame( animate );
-    cubes.rotation.x += 0.01;
-    cubes.rotation.y += 0.01;
     game.renderer.render( game.scene, game.camera );
   }
 
@@ -48,7 +46,7 @@ const App = () => {
 
     game.renderer.setSize( window.innerWidth, window.innerHeight );
     game.scene.add(cubes);
-    game.camera.position.z = 5;
+    game.camera.position.z = 10;
   
     document.getElementById('game').appendChild(game.renderer.domElement);
 
