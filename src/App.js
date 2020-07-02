@@ -11,7 +11,7 @@ class Game {
 }
 
 const App = () => {
-  const [cubes, setCubes] = useCubeGenerator(5);
+  const [cubes, setCubes] = useCubeGenerator(5, 1);
 
   let game,
       scene,
