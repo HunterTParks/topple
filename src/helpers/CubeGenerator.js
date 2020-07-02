@@ -1,7 +1,14 @@
 import React, { useEffect, useState } from 'react';
 import * as Three from "three";
 
-const useCubeGenerator = (newCount, offset = 5, newColor = 0x00ff00, geometry = [1, 1, 1]) => {
+const useCubeGenerator = (
+  newCount,
+  offset = 5,
+  options = {
+    newColor: 0x00ff00,
+    geometry: [1, 1, 1]
+  }
+) => {
   const [cubes, setCubes] = useState(new Three.Group());
   const [count, setCount] = useState(0);
 
@@ -16,8 +23,8 @@ const useCubeGenerator = (newCount, offset = 5, newColor = 0x00ff00, geometry = 
     if(difference) {
       for(let i = 0; i <= difference - 1; i++) {
         let mesh = new Three.Mesh(
-          new Three.BoxGeometry(...geometry),
-          new Three.MeshBasicMaterial( { color: newColor } )
+          new Three.BoxGeometry(...options.geometry),
+          new Three.MeshBasicMaterial( { color: options.newColor } )
         );
 
         mesh.position.x += currentOffset;
