@@ -11,7 +11,11 @@ class Game {
 }
 
 const App = () => {
-  const [cubes, setCubes] = useCubeGenerator(5, 1);
+  const [cubes, setCubes] = useCubeGenerator(5, 1, {
+    newColor: 0x00ff00,
+    geometry: [1, 1, 1],
+    outline: true
+  });
 
   let game,
       scene,
