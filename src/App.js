@@ -1,62 +1,40 @@
-import React, { useState, useEffect } from "react";
-import * as Three from "three";
+import React, { useState, useEffect, useRef } from "react";
+import { Canvas, useFrame } from 'react-three-fiber';
 
-class Game {
-  constructor(newScene, newRenderer, newCamera) {
-    this.scene = newScene;
-    this.renderer = newRenderer;
-    this.camera = newCamera;
-  }
+const Box = (props) => {
+  const mesh = useRef();
+
+  // State
+  const [hovered, setHover] = useState(false);
+  const [active, setActive] = useState(false);
+  
+  // Rotate mesh every frame, this is outside of React without overhead
+  useFrame(() => mesh.current.rotation.x = mesh.current.rotation.y += 0.01);
+
+  return (
+    <mesh
+      {...props}
+      ref={mesh}
+      scale={active ? [1.5, 1.5, 1.5] : [1, 1, 1]}
+      onClick={(e) => setActive(!active)}
+      onPointerOver={(e) => setHover(true)}
+      onPointerOut={(e) => setHover(false)}
+    >
+      <boxBufferGeometry attach="geometry" args={[1, 1, 1]} />
+      <meshStandardMaterial attach="material" color={hovered ? 'hotpink' : 'orange'} />    
+    </mesh>
+  );
 }
 
 const App = () => {
-  let game,
-      scene,
-      renderer,
-      camera,
-      geometry,
-      material,
-      cube;
-
-  const Initialize = () => {
-    return new Game(
-      new Three.Scene(),
-      new Three.WebGLRenderer(),
-      new Three.PerspectiveCamera( 75,
-        window.innerWidth / window.innerHeight,
-        0.1, 
-        1000
-      )
-    );
-  }
-
-  const animate = () => {
-    requestAnimationFrame( animate );
-    cube.rotation.x += 0.01;
-    cube.rotation.y += 0.01;
-    game.renderer.render( game.scene, game.camera );
-  }
-
-  useEffect(() => {
-    game     = Initialize();
-    geometry = new Three.BoxGeometry(1, 1, 1);
-    material = new Three.MeshBasicMaterial( { color: 0x00ff00 } );
-    cube     = new Three.Mesh( geometry, material );
-
-    game.renderer.setSize( window.innerWidth, window.innerHeight );
-    game.scene.add( cube );
-    game.camera.position.z = 5;
-  
-    document.getElementById('game').appendChild(game.renderer.domElement);
-
-    animate();
-    
-  }, []);
-
   return (
-    <div id="game">
-    </div>
+    <Canvas>
+      <ambientLight />
+      <pointLight position={[10, 10, 10]} />
+      <Box position={[-1.2, 0, 0]} />
+      <Box position={[1.2, 0, 0]} />
+    </Canvas>
   );
-};
+}
 
 export default App;
