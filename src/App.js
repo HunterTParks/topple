@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import * as Three from "three";
 import useShapeGenerator from "./helpers/ShapeGenerator";
 import CameraSettings from "./cameraSettings";
+import "./styles/App.less";
 
 class Game {
   constructor(newScene, newRenderer, newCamera) {
