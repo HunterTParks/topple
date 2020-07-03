@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import * as Three from "three";
 
-const useCubeGenerator = (
+const useShapeGenerator = (
   newCount,
   shape,
   offset = 5,
@@ -65,7 +65,6 @@ const useCubeGenerator = (
                 return newShapes;
             });
           
-            console.log('shapes:', shapes);
         }
     }
   }, [count]);
@@ -73,4 +72,4 @@ const useCubeGenerator = (
   return [shapes, setShapes];
 }
 
-export default useCubeGenerator;
+export default useShapeGenerator;

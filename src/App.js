@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import * as Three from "three";
-import useCubeGenerator from "./helpers/CubeGenerator"
+import useShapeGenerator from "./helpers/ShapeGenerator"
 
 class Game {
   constructor(newScene, newRenderer, newCamera) {
@@ -11,7 +11,7 @@ class Game {
 }
 
 const App = () => {
-  const [shapes, setShapes] = useCubeGenerator(5, 'spike', 2, {
+  const [shapes, setShapes] = useShapeGenerator(5, 'spike', 2, {
     newColor: 0x00ff00,
     geometry: [4, 4, 5],
     outline: true
