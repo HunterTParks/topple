@@ -11,9 +11,9 @@ class Game {
 }
 
 const App = () => {
-  const [cubes, setCubes] = useCubeGenerator(5, 1, {
+  const [shapes, setShapes] = useCubeGenerator(5, 'spike', 2, {
     newColor: 0x00ff00,
-    geometry: [1, 1, 1],
+    geometry: [4, 4, 5],
     outline: true
   });
 
@@ -38,6 +38,8 @@ const App = () => {
 
   const animate = () => {
     requestAnimationFrame( animate );
+    shapes.rotation.x += 0.01;
+    shapes.rotation.y += 0.01;
     game.renderer.render( game.scene, game.camera );
   }
 
@@ -45,7 +47,7 @@ const App = () => {
     game = Initialize();
 
     game.renderer.setSize( window.innerWidth, window.innerHeight );
-    game.scene.add(cubes);
+    game.scene.add(shapes);
     game.camera.position.z = 10;
   
     document.getElementById('game').appendChild(game.renderer.domElement);
