@@ -12,11 +12,6 @@ class Game {
 }
 
 const App = () => {
-  const [shapes, setShapes] = useShapeGenerator(2, 'spike', 2, {
-    newColor: 0x00ff00,
-    geometry: [4, 4, 5],
-    outline: true
-  });
   const [track, setTrack] = useShapeGenerator(10, 'square', 4, {
     newColor: 0x00FF00,
     geometry: [4, 4, 5],
@@ -53,8 +48,6 @@ const App = () => {
 
   const animate = () => {
     requestAnimationFrame( animate );
-    shapes.rotation.x += 0.01;
-    shapes.rotation.y += 0.01;
     game.renderer.render( game.scene, game.camera );
   }
 
@@ -63,7 +56,7 @@ const App = () => {
     ChangeCamera('threeD');
 
     game.renderer.setSize( window.innerWidth, window.innerHeight );
-    game.scene.add(shapes, track);
+    game.scene.add(track);
   
     document.getElementById('game').appendChild(game.renderer.domElement);
 
