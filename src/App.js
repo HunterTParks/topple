@@ -1,73 +1,64 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import * as Three from "three";
+import { Canvas, useFrame } from 'react-three-fiber';
+import { Sky, PerspectiveCamera } from 'drei';
 import useShapeGenerator from "./helpers/ShapeGenerator";
 import CameraSettings from "./cameraSettings";
 import "./styles/App.less";
 
-class Game {
-  constructor(newScene, newRenderer, newCamera) {
-    this.scene = newScene;
-    this.renderer = newRenderer;
-    this.camera = newCamera;
-  }
+const Track = (newCounter) => {
+  const [track, setTrack] = useState([]);
+  const [counter, setCounter] = useState(0);
+  let offset = 0;
+
+  useEffect(() => {
+    setCounter(newCounter.counter);
+  }, []);
+
+  useEffect(() => {
+    let newTrack = [];
+    for(let i = 0; i <= counter - 1; i++) {
+      newTrack.push({
+        color: 0x00FF00,
+        args: [1, 1, 1],
+        offset: offset
+      });
+      
+      /**
+       * TODO: The offset needs to change based on how big the 
+       *       individual squares of the track should get
+       *
+       */
+      offset += 0.5;
+    } 
+
+    setTrack(newTrack);
+  }, [counter]);
+  
+  return (
+    <>
+      {track.map((item, index) => {
+        return <mesh key={index} position={[item.offset, 0, 0]}>
+          <boxBufferGeometry attach="geometry" args={item.args} />
+          <meshStandardMaterial attach="material" color={item.color} transparent />
+        </mesh>
+      })}
+    </>
+  );
 }
 
 const App = () => {
-  const [track, setTrack] = useShapeGenerator(10, 'square', 4, {
-    newColor: 0x00FF00,
-    geometry: [4, 4, 5],
-    outline: true
-  });
-
-  let game,
-      scene,
-      renderer,
-      camera,
-      geometry,
-      material
-
-  const Initialize = () => {
-    return new Game(
-      new Three.Scene(),
-      new Three.WebGLRenderer(),
-      new Three.PerspectiveCamera( 75,
-        window.innerWidth / window.innerHeight,
-        0.1, 
-        1000
-      )
-    );
-  }
-
-  const ChangeCamera = (dimension) => {
-    game.camera.position.x = CameraSettings[dimension].posx;
-    game.camera.position.y = CameraSettings[dimension].posy;
-    game.camera.position.z = CameraSettings[dimension].posz;
-    game.camera.rotation.x = CameraSettings[dimension].rotx;
-    game.camera.rotation.y = CameraSettings[dimension].roty;
-    game.camera.rotation.z = CameraSettings[dimension].rotz;
-  }
-
-  const animate = () => {
-    requestAnimationFrame( animate );
-    game.renderer.render( game.scene, game.camera );
-  }
-
-  useEffect(() => {
-    game = Initialize();
-    ChangeCamera('threeD');
-
-    game.renderer.setSize( window.innerWidth, window.innerHeight );
-    game.scene.add(track);
-  
-    document.getElementById('game').appendChild(game.renderer.domElement);
-
-    animate();
-    
-  }, []);
+  const cam = useRef();
 
   return (
-    <div id="game">
-    </div>
+    <>
+      <Canvas colorManagement>
+        <ambientLight />
+        <Sky />
+        <PerspectiveCamera ref={cam} position={[0, 0, 20]} />
+        <Track counter={10} />
+      </Canvas>
+    </>
   );
 };
 
