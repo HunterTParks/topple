@@ -1,15 +1,9 @@
 import React, { useState, useEffect, useRef, useMemo } from "react";
 import * as Three from "three";
-import { Canvas, useFrame, extend, useUpdate } from 'react-three-fiber';
-import { LineMaterial } from 'three/examples/jsm/lines/LineMaterial';
-import { WireframeGeometry2 } from 'three/examples/jsm/lines/WireframeGeometry2';
-import { Wireframe } from 'three/examples/jsm/lines/Wireframe';
-import { Sky, PerspectiveCamera } from 'drei';
-import useShapeGenerator from "./helpers/ShapeGenerator";
+import { Canvas, useFrame} from 'react-three-fiber';
+import { PerspectiveCamera } from 'drei';
 import CameraSettings from "./cameraSettings";
 import "./styles/App.less";
-
-extend({ LineMaterial, WireframeGeometry2, Wireframe }); 
 
 const Track = (newCounter) => {
   const [track, setTrack] = useState([]);
@@ -71,7 +65,6 @@ const TrackOutline = (args) => {
 const App = () => {
   const cam = useRef();
   const threeDCamera = CameraSettings.threeD;
-  console.log('3D Camera settings: ', threeDCamera);
 
   return (
     <>
