@@ -77,6 +77,7 @@ const App = () => {
     <>
       <Canvas colorManagement>
         <PerspectiveCamera ref={cam} position={[-2, -2.5, 2]} rotation={[0.2, 1, 0]}>
+          <ambientLight />
           <Track counter={100} />
         </PerspectiveCamera>
       </Canvas>
