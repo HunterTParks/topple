@@ -64,13 +64,14 @@ const TrackOutline = (args) => {
 }
 
 const App = () => {
+  const [dimension, setDimension] = useState(3);
   const cam = useRef();
-  const threeDCamera = CameraSettings.threeD;
+  const CameraPositionAndRotation = dimension == 2 ? CameraSettings.twoD : CameraSettings.threeD;
 
   return (
     <>
       <Canvas colorManagement>
-        <PerspectiveCamera ref={cam} position={[-2, -2.5, 2]} rotation={[0.2, 1, 0]}>
+        <PerspectiveCamera ref={cam} position={CameraPositionAndRotation.position} rotation={CameraPositionAndRotation.rotation}>
           <ambientLight />
           <Track counter={100} />
         </PerspectiveCamera>

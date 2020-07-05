@@ -1,19 +1,15 @@
 const CameraSettings = {
   twoD: {
-    posx: 0,
-    posy: 0,
-    posz: 30,
-    rotx: 0,
-    roty: 0,
-    rotz: 0
+    //         X  Y  Z
+    position: [0, 0, -3],
+    //         X  Y  Z
+    rotation: [0, 0, 0]
   },
   threeD: {
-    posx: -10,
-    posy: 10,
-    posz: 20,
-    rotx: -0.4,
-    roty: -0.9,
-    rotz: -0.3
+    //         X     Y   Z
+    position: [-2, -2.5, 2],
+    //         X    Y  Z
+    rotation: [0.2, 1, 0]
   }
 };
 
