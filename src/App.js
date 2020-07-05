@@ -39,13 +39,14 @@ const Track = (newCounter) => {
   
   return (
     <>
-      {track.map((item, index) => (<>
-          <mesh position={[item.offset, 0, 0]} key={index}>
+      {track.map((item, index) => (
+        <React.Fragment key={index}>
+          <mesh position={[item.offset, 0, 0]} >
             <boxBufferGeometry attach="geometry" args={item.args} />
             <meshStandardMaterial attach="material" color={item.color} transparent />
           </mesh>
           <TrackOutline index={index + track.length} args={item.args} color={0x000000} offset={item.offset} key={index + track.length} />
-      </>)
+        </React.Fragment>)
       )}
     </>
   );
