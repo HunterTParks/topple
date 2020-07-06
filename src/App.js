@@ -1,17 +1,19 @@
 import React, { useState, useEffect, useRef, useMemo } from "react";
 import * as Three from "three";
 import { Canvas, useFrame} from 'react-three-fiber';
+import { Physics, usePlane, useBox } from 'use-cannon';
 import { PerspectiveCamera } from 'drei';
 import CameraSettings from "./cameraSettings";
 import "./styles/App.less";
 
-const Track = (newCounter) => {
+const Track = (props) => {
   const [track, setTrack] = useState([]);
   const [counter, setCounter] = useState(0);
+  const [ref] = usePlane(() => ({ rotation: [-Math.PI / 2, 0, 0], ...props }))
   let offset = 0;
 
   useEffect(() => {
-    setCounter(newCounter.counter);
+    setCounter(props.counter);
   }, []);
 
   useEffect(() => {
@@ -41,7 +43,7 @@ const Track = (newCounter) => {
     <>
       {track.map((item, index) => (
         <React.Fragment key={index}>
-          <mesh position={[item.offset, 0, 0]} >
+          <mesh position={[item.offset, -0.5, 0]} ref={ref}>
             <boxBufferGeometry attach="geometry" args={item.args} />
             <meshStandardMaterial attach="material" color={item.color} transparent />
           </mesh>
@@ -56,9 +58,20 @@ const TrackOutline = (args) => {
   const geometry = useMemo(() => new Three.BoxBufferGeometry(args.args));
 
   return (
-    <mesh position={[args.offset, 0, 0]} key={args.index}>
+    <mesh position={[args.offset, -0.5, 0]} key={args.index}>
       <boxBufferGeometry attach="geometry" args={args.args} />
       <meshStandardMaterial attach="material" color={args.color} transparent wireframe={true}/>
+    </mesh>
+  );
+}
+
+const Character = (props) => {
+  const [ref] = useBox(() => ({ mass: 1, position: [1, 1, 0], ...props }))
+
+  return (
+    <mesh ref={ref}>
+      <boxBufferGeometry attach="geometry" args={[1, 1, 1]} />
+      <meshStandardMaterial attach="material" color={0x000000} />
     </mesh>
   );
 }
@@ -73,7 +86,10 @@ const App = () => {
       <Canvas colorManagement>
         <PerspectiveCamera ref={cam} position={CameraPositionAndRotation.position} rotation={CameraPositionAndRotation.rotation}>
           <ambientLight />
-          <Track counter={100} />
+          <Physics>
+            <Track counter={100} />
+            <Character />
+          </Physics>
         </PerspectiveCamera>
       </Canvas>
     </>
