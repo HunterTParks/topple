@@ -1,6 +1,6 @@
-import React, { useState, useEffect, useRef, useMemo } from "react";
+import React, { useState, useEffect, useRef, useMemo, useCallback } from "react";
 import * as Three from "three";
-import { Canvas, useFrame } from 'react-three-fiber';
+import { Canvas, useFrame, useThree } from 'react-three-fiber';
 import { Physics, usePlane, useBox } from 'use-cannon';
 import { PerspectiveCamera } from 'drei';
 import CameraSettings from "./cameraSettings";
@@ -66,23 +66,29 @@ const TrackOutline = (args) => {
 }
 
 const Character = (props) => {
-  const [ref, api] = useBox(() => ({ mass: 1, position: [1, 1, 0], ...props }))
+  const [ref, api] = useBox(() => ({ mass: 1, position: [1, 1, 0] }))
   const [position, setPosition] = useState([1, 1, 1]);
-  const [velocity, setVelocity] = useState(0.2);
   const [moving, isMoving] = useState(false);
-  const [speed, setSpeed] = useState(0);
   const [grounded, setGrounded] = useState(false);
 
   useEffect(() => {
     isMoving(!moving);
   }, []);
 
-  useFrame(() => { 
+  useFrame(state => { 
     if(!grounded && ref.current.position.y <= 0.5)
       setGrounded(true);
     
-    if(grounded)
-      api.velocity.set(2, 0, 0);
+    if(grounded) {
+      api.velocity.set(3, 0, 0);
+      state.camera.position.set(
+        ref.current.position.x - 2,
+        props.cameraPosition[1],
+        -props.cameraPosition[2]
+      );
+      state.camera.lookAt(ref.current.position);
+      state.camera.updateProjectionMatrix();
+    }
   });
 
   return (
@@ -95,19 +101,23 @@ const Character = (props) => {
 
 const App = () => {
   const [dimension, setDimension] = useState(3);
-  const cam = useRef();
   const CameraPositionAndRotation = dimension == 2 ? CameraSettings.twoD : CameraSettings.threeD;
+  const cam = useRef();
 
   return (
     <>
       <Canvas colorManagement>
-        <PerspectiveCamera ref={cam} position={CameraPositionAndRotation.position} rotation={CameraPositionAndRotation.rotation}>
           <ambientLight />
           <Physics>
             <Track counter={100} />
-            <Character />
+            <Character 
+              cameraPosition={CameraPositionAndRotation.position} 
+            >
+              <PerspectiveCamera 
+                ref={cam} 
+              />
+            </Character>
           </Physics>
-        </PerspectiveCamera>
       </Canvas>
     </>
   );

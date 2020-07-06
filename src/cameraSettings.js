@@ -7,9 +7,9 @@ const CameraSettings = {
   },
   threeD: {
     //         X     Y   Z
-    position: [-2, -2.5, 2],
+    position: [0, 1, -4],
     //         X    Y  Z
-    rotation: [0.2, 1, 0]
+    rotation: [0.3, 0.7, -0.2]
   }
 };
 
