@@ -1,64 +1,82 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef, useMemo } from "react";
 import * as Three from "three";
-import useCubeGenerator from "./helpers/CubeGenerator"
+import { Canvas, useFrame} from 'react-three-fiber';
+import { PerspectiveCamera } from 'drei';
+import CameraSettings from "./cameraSettings";
+import "./styles/App.less";
 
-class Game {
-  constructor(newScene, newRenderer, newCamera) {
-    this.scene = newScene;
-    this.renderer = newRenderer;
-    this.camera = newCamera;
-  }
+const Track = (newCounter) => {
+  const [track, setTrack] = useState([]);
+  const [counter, setCounter] = useState(0);
+  let offset = 0;
+
+  useEffect(() => {
+    setCounter(newCounter.counter);
+  }, []);
+
+  useEffect(() => {
+    const args = [1, 1, 1];
+    let newTrack = [];
+    for(let i = 0; i <= counter - 1; i++) {
+      // Track Item
+      newTrack.push({
+        color: 0x00FF00,
+        args: args,
+        offset: offset,
+        type: 'track' 
+      });
+
+      /**
+       * TODO: The offset needs to change based on how big the 
+       *       individual squares of the track should get
+       *
+       */
+      offset += 1;
+    } 
+
+    setTrack(newTrack);
+  }, [counter]);
+  
+  return (
+    <>
+      {track.map((item, index) => (
+        <React.Fragment key={index}>
+          <mesh position={[item.offset, 0, 0]} >
+            <boxBufferGeometry attach="geometry" args={item.args} />
+            <meshStandardMaterial attach="material" color={item.color} transparent />
+          </mesh>
+          <TrackOutline index={index + track.length} args={item.args} color={0x000000} offset={item.offset} key={index + track.length} />
+        </React.Fragment>)
+      )}
+    </>
+  );
+}
+
+const TrackOutline = (args) => {
+  const geometry = useMemo(() => new Three.BoxBufferGeometry(args.args));
+
+  return (
+    <mesh position={[args.offset, 0, 0]} key={args.index}>
+      <boxBufferGeometry attach="geometry" args={args.args} />
+      <meshStandardMaterial attach="material" color={args.color} transparent wireframe={true}/>
+    </mesh>
+  );
 }
 
 const App = () => {
-  const [cubes, setCubes] = useCubeGenerator(5, 1, {
-    newColor: 0x00ff00,
-    geometry: [1, 1, 1],
-    outline: true
-  });
-
-  let game,
-      scene,
-      renderer,
-      camera,
-      geometry,
-      material
-
-  const Initialize = () => {
-    return new Game(
-      new Three.Scene(),
-      new Three.WebGLRenderer(),
-      new Three.PerspectiveCamera( 75,
-        window.innerWidth / window.innerHeight,
-        0.1, 
-        1000
-      )
-    );
-  }
-
-  const animate = () => {
-    requestAnimationFrame( animate );
-    cubes.rotation.x += 0.01;
-    cubes.rotation.y += 0.01;
-    game.renderer.render( game.scene, game.camera );
-  }
-
-  useEffect(() => {
-    game = Initialize();
-
-    game.renderer.setSize( window.innerWidth, window.innerHeight );
-    game.scene.add(cubes);
-    game.camera.position.z = 5;
-  
-    document.getElementById('game').appendChild(game.renderer.domElement);
-
-    animate();
-    
-  }, []);
+  const [dimension, setDimension] = useState(3);
+  const cam = useRef();
+  const CameraPositionAndRotation = dimension == 2 ? CameraSettings.twoD : CameraSettings.threeD;
 
   return (
-    <div id="game">
-    </div>
+    <>
+      <Canvas colorManagement>
+        <PerspectiveCamera ref={cam} position={CameraPositionAndRotation.position} rotation={CameraPositionAndRotation.rotation}>
+          <ambientLight />
+          <Track counter={100} />
+        </PerspectiveCamera>
+      </Canvas>
+    </>
   );
 };
 
