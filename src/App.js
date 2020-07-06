@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef, useMemo } from "react";
 import * as Three from "three";
-import { Canvas, useFrame} from 'react-three-fiber';
+import { Canvas, useFrame } from 'react-three-fiber';
 import { Physics, usePlane, useBox } from 'use-cannon';
 import { PerspectiveCamera } from 'drei';
 import CameraSettings from "./cameraSettings";
@@ -66,11 +66,28 @@ const TrackOutline = (args) => {
 }
 
 const Character = (props) => {
-  const [ref] = useBox(() => ({ mass: 1, position: [1, 1, 0], ...props }))
+  const [ref, api] = useBox(() => ({ mass: 1, position: [1, 1, 0], ...props }))
+  const [position, setPosition] = useState([1, 1, 1]);
+  const [velocity, setVelocity] = useState(0.2);
+  const [moving, isMoving] = useState(false);
+  const [speed, setSpeed] = useState(0);
+  const [grounded, setGrounded] = useState(false);
+
+  useEffect(() => {
+    isMoving(!moving);
+  }, []);
+
+  useFrame(() => { 
+    if(!grounded && ref.current.position.y <= 0.5)
+      setGrounded(true);
+    
+    if(grounded)
+      api.velocity.set(2, 0, 0);
+  });
 
   return (
     <mesh ref={ref}>
-      <boxBufferGeometry attach="geometry" args={[1, 1, 1]} />
+      <boxBufferGeometry attach="geometry" args={position} />
       <meshStandardMaterial attach="material" color={0x000000} />
     </mesh>
   );
