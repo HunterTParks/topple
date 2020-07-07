@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import * as Three from 'three';
 import { useFrame } from 'react-three-fiber';
 import { useBox } from 'use-cannon';
@@ -13,18 +13,34 @@ const Character = (props) => {
   );
   const [position, setPosition] = useState([1, 1, 1]);
   const [moving, isMoving] = useState(false);
-  const [grounded, setGrounded] = useState(false);
+  let grounded = useRef(false);
+  let isJumping = useRef(false);
+  let jumpFramesOffset = 0;
 
   useEffect(() => {
     isMoving(!moving);
-    console.log('REF: ', ref);
+
+    document.addEventListener("keydown", event => {
+      if(event.keyCode == 32) {
+        Jump();
+      }
+    })
   }, []);
 
   useFrame(state => { 
-    if(!grounded && ref.current.position.y <= 0.5)
-      setGrounded(true);
+    if(isJumping.current) {
+      jumpFramesOffset++;
+      if(jumpFramesOffset >= 20){
+        jumpFramesOffset = 0;
+        isJumping.current = false;
+      }
+    }
+
+    if(!grounded.current && !isJumping.current && ref.current.position.y <= 0.5){
+      grounded.current = true;
+    }
     
-    if(grounded) {
+    if(grounded.current) {
       api.velocity.set(3, 0, 0);
       state.camera.position.set(
         ref.current.position.x - 2,
@@ -35,6 +51,14 @@ const Character = (props) => {
       state.camera.updateProjectionMatrix();
     }
   });
+
+  const Jump = () => {
+    if(grounded.current) {
+      grounded.current = false;
+      isJumping.current = true;
+      api.velocity.set(3, 5, 0);
+    }
+  }
 
   return (
     <mesh ref={ref}>
