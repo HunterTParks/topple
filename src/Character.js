@@ -41,7 +41,7 @@ const Character = (props) => {
     }
     
     if(grounded.current) {
-      api.velocity.set(3, 0, 0);
+      api.velocity.set(props.speed, 0, 0);
     }
     
     AlignCamera(state);
@@ -61,7 +61,7 @@ const Character = (props) => {
     if(grounded.current) {
       grounded.current = false;
       isJumping.current = true;
-      api.velocity.set(3, 5, 0);
+      api.velocity.set(props.speed, 5, 0);
     }
   }
 

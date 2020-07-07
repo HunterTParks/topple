@@ -11,6 +11,7 @@ import "./styles/App.less";
 
 const App = () => {
   const [dimension, setDimension] = useState(3);
+  const [speed, setSpeed] = useState(16);
   const CameraPositionAndRotation = dimension == 2 ? CameraSettings.twoD : CameraSettings.threeD;
   const cam = useRef();
 
@@ -22,6 +23,7 @@ const App = () => {
             <Track counter={100} />
             <Character 
               cameraPosition={CameraPositionAndRotation.position} 
+              speed={speed}
             >
               <PerspectiveCamera 
                 ref={cam} 
