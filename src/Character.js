@@ -42,6 +42,12 @@ const Character = (props) => {
     
     if(grounded.current) {
       api.velocity.set(3, 0, 0);
+    }
+    
+    AlignCamera(state);
+  });
+
+  const AlignCamera = state => {
       state.camera.position.set(
         ref.current.position.x - 2,
         props.cameraPosition[1],
@@ -49,8 +55,7 @@ const Character = (props) => {
       );
       state.camera.lookAt(ref.current.position);
       state.camera.updateProjectionMatrix();
-    }
-  });
+  }
 
   const Jump = () => {
     if(grounded.current) {
