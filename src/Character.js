@@ -4,13 +4,20 @@ import { useFrame } from 'react-three-fiber';
 import { useBox } from 'use-cannon';
 
 const Character = (props) => {
-  const [ref, api] = useBox(() => ({ mass: 1, position: [1, 1, 0] }))
+  const [ref, api] = useBox(() => (
+    { 
+      mass: 1, 
+      position: [1, 1, 0],
+      fixedRotation: true
+    })
+  );
   const [position, setPosition] = useState([1, 1, 1]);
   const [moving, isMoving] = useState(false);
   const [grounded, setGrounded] = useState(false);
 
   useEffect(() => {
     isMoving(!moving);
+    console.log('REF: ', ref);
   }, []);
 
   useFrame(state => { 
