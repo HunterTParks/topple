@@ -8,14 +8,13 @@ const Character = (props) => {
     { 
       mass: 1, 
       position: [1, 1, 0],
-      fixedRotation: true
+      fixedRotation: true,
+      onCollide: HandleCollisionDetection
     })
   );
   const [position, setPosition] = useState([1, 1, 1]);
   const [moving, isMoving] = useState(false);
   let grounded = useRef(false);
-  let isJumping = useRef(false);
-  let jumpFramesOffset = 0;
 
   useEffect(() => {
     isMoving(!moving);
@@ -24,27 +23,16 @@ const Character = (props) => {
       if(event.keyCode == 32) {
         Jump();
       }
-    })
+    });
   }, []);
 
   useFrame(state => { 
-    if(isJumping.current) {
-      jumpFramesOffset++;
-      if(jumpFramesOffset >= 20){
-        jumpFramesOffset = 0;
-        isJumping.current = false;
-      }
-    }
-
-    if(!grounded.current && !isJumping.current && ref.current.position.y <= 0.5){
-      grounded.current = true;
-    }
-    
     if(grounded.current) {
       api.velocity.set(props.speed, 0, 0);
     }
     
     AlignCamera(state);
+    HandleCollisionDetection();
   });
 
   const AlignCamera = state => {
@@ -57,16 +45,21 @@ const Character = (props) => {
       state.camera.updateProjectionMatrix();
   }
 
+  const HandleCollisionDetection = event => {
+    if(event && event.target.geometry.type == "BoxBufferGeometry") {
+      grounded.current = true;
+    }
+  }
+
   const Jump = () => {
     if(grounded.current) {
       grounded.current = false;
-      isJumping.current = true;
       api.velocity.set(props.speed, 5, 0);
     }
   }
 
   return (
-    <mesh ref={ref}>
+    <mesh ref={ref} >
       <boxBufferGeometry attach="geometry" args={position} />
       <meshStandardMaterial attach="material" color={0x000000} />
     </mesh>
