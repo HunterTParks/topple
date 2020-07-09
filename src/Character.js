@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import * as Three from 'three';
 import { useFrame } from 'react-three-fiber';
 import { useBox } from 'use-cannon';
+import PropTypes from 'prop-types';
 
 const Character = (props) => {
   const [ref, api] = useBox(() => (
@@ -64,6 +65,11 @@ const Character = (props) => {
       <meshStandardMaterial attach="material" color={0x000000} />
     </mesh>
   );
+}
+
+Character.propTypes = {
+  speed: PropTypes.number,
+  cameraPosition: PropTypes.array
 }
 
 export default Character;
