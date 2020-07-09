@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import * as Three from 'three';
 import { usePlane } from 'use-cannon';
+import PropTypes from 'prop-types';
 
 const Track = (props) => {
   const [track, setTrack] = useState([]);
@@ -59,6 +60,16 @@ const TrackOutline = (args) => {
       <meshStandardMaterial attach="material" color={args.color} transparent wireframe={true}/>
     </mesh>
   );
+}
+
+Track.propTypes = {
+  counter: PropTypes.number
+}
+
+TrackOutline.propTypes = {
+  index: PropTypes.number,
+  args: PropTypes.array,
+  color: PropTypes.number 
 }
 
 export default Track;
